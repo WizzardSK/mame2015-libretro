@@ -307,6 +307,9 @@ else ifneq (,$(findstring android,$(platform)))
    # "no member named '__error_realloc_is_dangerous__'". NO_MEM_TRACKING is
    # this tree's own switch for that; the emscripten build already uses it.
    PLATCFLAGS += -DNO_MEM_TRACKING
+   # bionic has no pthread_setaffinity_np - sched_setaffinity is what it has -
+   # and sync_retro.c already has a switch for the targets that lack it.
+   PLATCFLAGS += -DNO_AFFINITY_NP
    ifeq ($(VRENDER),opengl)
       PLATCFLAGS += -DHAVE_OPENGL
       LIBS += -lGLESv2
