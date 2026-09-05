@@ -302,6 +302,11 @@ else ifneq (,$(findstring android,$(platform)))
 
    CCOMFLAGS += $(fpic) -fsigned-char -finline -fno-common -fno-builtin -ffunction-sections -funwind-tables
    PLATCFLAGS += -DANDROID -fstrict-aliasing
+   # corealloc.h poisons realloc(), and the NDK's libc++ <locale> calls it from
+   # a header, so every translation unit that reaches <locale> stops on
+   # "no member named '__error_realloc_is_dangerous__'". NO_MEM_TRACKING is
+   # this tree's own switch for that; the emscripten build already uses it.
+   PLATCFLAGS += -DNO_MEM_TRACKING
    ifeq ($(VRENDER),opengl)
       PLATCFLAGS += -DHAVE_OPENGL
       LIBS += -lGLESv2
