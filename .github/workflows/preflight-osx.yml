@@ -1,0 +1,21 @@
+# Fork-only: mame2015 has no macOS job; this is what the osx-arm64 template runs.
+name: preflight (osx arm64)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - preflight-**
+
+jobs:
+  osx-arm64:
+    runs-on: macos-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          export LIBRETRO_APPLE_ISYSROOT=$(xcodebuild -version -sdk macosx Path)
+          make -f Makefile -j$(sysctl -n hw.ncpu) \
+            platform=osx arch=arm CC=clang CXX=clang++ CROSS_COMPILE=1 \
+            LIBRETRO_APPLE_PLATFORM=arm64-apple-macos11.0
+      - run: ls -l mame2015_libretro.dylib && lipo -info mame2015_libretro.dylib

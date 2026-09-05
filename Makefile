@@ -175,7 +175,7 @@ ifneq (,$(findstring unix,$(platform)))
 else ifeq ($(platform), osx)
    TARGETLIB := $(TARGET_NAME)_libretro.dylib
    TARGETOS = macosx
-   fpic := -fPIC -mmacosx-version-min=10.7
+   fpic := -fPIC
    LIBCPLUSPLUS := -stdlib=libc++
    LDFLAGSEMULATOR +=  $(LIBCPLUSPLUS)
    PLATCFLAGS += $(fpic)
@@ -187,7 +187,7 @@ else ifeq ($(platform), osx)
    CFLAGS += $(LIBCPLUSPLUS)
    LDFLAGS +=  $(fpic) $(SHARED)
    AR ?= @ar
-   PYTHON ?= @python
+   PYTHON ?= @python3
    ifeq ($(COMMAND_MODE),"legacy")
       ARFLAGS = -crs
    endif
@@ -198,6 +198,9 @@ else ifeq ($(platform), osx)
       PTR64 = 1
    endif
    ifeq ($(firstword $(filter ppc64,$(UNAME))),ppc64)
+      PTR64 = 1
+   endif
+   ifneq (,$(findstring arm64,$(UNAME)$(LIBRETRO_APPLE_PLATFORM)))
       PTR64 = 1
    endif
    ifneq (,$(findstring Power,$(UNAME)))
